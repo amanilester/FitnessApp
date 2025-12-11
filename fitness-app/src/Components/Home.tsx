@@ -1,9 +1,10 @@
 import { useState } from 'react'
-
+import PremadeWorkouts from './PremadeWorkouts/PremadeWorkouts.tsx'
 function Home() {
     return (
         <div>
-            <h1>Welcome to the Fitness App Home Page</h1>
+            <h1>Premade Workouts</h1>
+            <PremadeWorkouts />
         </div>
     )
 }
