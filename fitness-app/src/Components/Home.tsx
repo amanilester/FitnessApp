@@ -3,7 +3,7 @@ import PremadeWorkouts from './PremadeWorkouts/PremadeWorkouts.tsx'
 function Home() {
     return (
         <div>
-            <h1>Premade Workouts</h1>
+            <h1>Programs</h1>
             <PremadeWorkouts />
         </div>
     )
