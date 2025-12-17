@@ -8,15 +8,15 @@ function App() {
   const [name, setName] = useState('continue')
 
   return (
-    <>
+    <div className="mt-64 grid text-center">
       <div>
         <h1>Fitness App</h1>
       </div>
       <Link to="/home">
-      <button>continue</button>
+      <button className="text-center">continue</button>
       </Link>
       
-    </>
+    </div>
   )
 }
 

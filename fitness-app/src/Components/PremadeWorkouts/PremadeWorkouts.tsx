@@ -32,32 +32,39 @@ function PremadeWorkouts() {
   return (
     <div>
       {programs.map((program, index) => (
-        <div key={index} style={{ border: '1px solid black', margin: '10px', padding: '10px' }}>
-          <h2 onClick={() => toggleExpand(index)} style={{ cursor: 'pointer' }}>
-            {program.name} {program.expanded ? '▲' : '▼'}
-          </h2>
+        <div key={index} 
+          className="p-6 rounded-2xl shadow-lg transition cursor-pointer bg-neutral-900"
+          onClick={() => toggleExpand(index)}
+        >
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">{program.name}</h2>
+            <span>{program.expanded ? "▲" : "▼"}</span>
+          </div>
+
+          <div className="mt-3 space-y-1">
+            <p><strong>Push:</strong> {program.days.push.length} exercises</p>
+            <p><strong>Pull:</strong> {program.days.pull.length} exercises</p>
+            <p><strong>Legs:</strong> {program.days.legs.length} exercises</p>
+          </div>
+          
           {program.expanded && (
-            <div>
-              <h3>Push Day</h3>
-              <ul>
-                {program.days.push.map((exercise, idx) => (
-                  <li key={idx}>{exercise.exercise}: {exercise.sets} sets of {exercise.reps}</li>
-                ))}
-              </ul>
-              <h3>Pull Day</h3>
-              <ul>
-                {program.days.pull.map((exercise, idx) => (
-                  <li key={idx}>{exercise.exercise}: {exercise.sets} sets of {exercise.reps}</li>
-                ))}
-              </ul>
-              <h3>Leg Day</h3>
-              <ul>
-                {program.days.legs.map((exercise, idx) => (
-                  <li key={idx}>{exercise.exercise}: {exercise.sets} sets of {exercise.reps}</li>
-                ))}
-              </ul>
+            <div className="mt-6 p-4 rounded-xl space-y-4 bg-neutral-800">
+              {Object.entries(program.days).map(([day, exercises], i) => (
+                <div key={i} className={i < Object.entries(program.days).length - 1 ? "p-4 rounded-xl shadow-md" : "p-4 shadow-md"}>
+                  <h3 className="text-xl font-semibold mb-3 capitalize">Day {i + 1}: {day}</h3>
+                  {exercises.map((exercise, j) => (
+                    <div key={j} className="mb-3 p-3 rounded-lg border">
+                      <p>Sets: {exercise.sets}</p>
+                      <p>Reps: {exercise.reps}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <button className="w-full mt-4 py-3 bg-sky-600 rounded-xl hover:bg-sky-700">Start Program</button>
             </div>
           )}
+
+          
         </div>
       ))}
     </div>
