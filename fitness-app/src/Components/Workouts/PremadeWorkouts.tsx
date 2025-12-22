@@ -51,9 +51,10 @@ function PremadeWorkouts() {
             <div className="mt-6 p-4 rounded-xl space-y-4 bg-neutral-800">
               {Object.entries(program.days).map(([day, exercises], i) => (
                 <div key={i} className={i < Object.entries(program.days).length - 1 ? "p-4 rounded-xl shadow-md" : "p-4 shadow-md"}>
-                  <h3 className="text-xl font-semibold mb-3 capitalize">Day {i + 1}: {day}</h3>
+                  <h3 className="text-xl font-semibold mb-3 capitalize">{day}</h3>
                   {exercises.map((exercise, j) => (
                     <div key={j} className="mb-3 p-3 rounded-lg border">
+                      <h3 className="text-xl font-semibold">{exercise.exercise}</h3>
                       <p>Sets: {exercise.sets}</p>
                       <p>Reps: {exercise.reps}</p>
                     </div>

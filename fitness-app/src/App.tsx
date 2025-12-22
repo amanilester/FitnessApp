@@ -5,10 +5,9 @@ import { Link } from 'react-router-dom'
 import './App.css'
 
 function App() {
-  const [name, setName] = useState('continue')
 
   return (
-    <div className="mt-64 grid text-center">
+    <div className="m-64 grid text-center">
       <div>
         <h1>Fitness App</h1>
       </div>
