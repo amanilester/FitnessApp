@@ -6,6 +6,7 @@ import Home from './Components/Home.tsx'
 import NotFound from './Components/NotFound.tsx'
 import Navbar from './Components/Navbar.tsx'
 import NewProgram from './Components/NewProgram.tsx'
+import Day from './Components/Workouts/Day.tsx'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 
 
@@ -14,7 +15,8 @@ const router = createBrowserRouter([
   { path: '/', element: <App /> },
   { path: '/home', element: <Home /> },
   { path: '/*', element: <NotFound />},
-  { path: '/new-program', element: <NewProgram /> }
+  { path: '/new-program', element: <NewProgram /> },
+  { path: '/day-testing', element: <Day /> }
 ])
 
 
