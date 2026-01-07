@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   { path: '/home', element: <Home /> },
   { path: '/*', element: <NotFound />},
   { path: '/new-program', element: <NewProgram /> },
-  { path: '/day-testing', element: <Day /> }
+  { path: '/day-testing', element: <Day dayName="" /> }
 ])
 
 

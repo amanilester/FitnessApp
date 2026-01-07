@@ -1,20 +1,57 @@
 import { useState } from "react";
 
-function Day() {
+function Day(props: {dayName: string}) {
     const [exerciseFlag, setExerciseFlag] = useState(false);
-    const [iter, setIter] = useState(0);
     
     const [exerciseName, setExerciseName] = useState("");
     const [sets, setSets] = useState("");
     const [lowerRange, setLowerRange] = useState("");
     const [upperRange, setUpperRange] = useState("");
+    const [exercises, setExercises] = useState<{ name: string; sets: number; repRange: string }[]>([]);
+
     const toggleExerciseInput = () => {
             setExerciseFlag(!exerciseFlag);
         }
+
+    const submitExercise = () => {
+        if(exerciseName == "" && sets == "" && lowerRange == "" && upperRange == "") {
+            toggleExerciseInput();
+            return;
+        }
+        if(exerciseName == "" || sets == "" || lowerRange == "" || upperRange == "") {
+            return;
+        }
+        const newExercise = {
+            name: exerciseName,
+            sets: Number(sets),
+            repRange: lowerRange + "-" + upperRange
+        };
+        const updatedExercises = [...exercises, newExercise];
+        setExercises(updatedExercises);
+        setExerciseName("");
+        setSets("");
+        setLowerRange("");
+        setUpperRange("");
+        toggleExerciseInput();
+    }
     
     return (
         <div>
-            <input type="text" placeholder={"Day " + iter} className="m-4 bg-neutral-700 rounded-2xl text-center"/>
+            <div>
+                <input type="text" placeholder={props.dayName} className="m-4 bg-neutral-700 rounded-2xl text-center"/>
+                <button type="button" className="bg-red-700 rounded-2xl">X</button>
+            </div>
+
+            {exercises.map((exercise, index) => (
+                <div key={index} className="grid grid-cols-3 gap-4 m-4 text-center">
+                    <h3 className="text-xl font-semibold">{exercise.name}</h3>
+                    <p>Sets: {exercise.sets}</p>
+                    <p>Rep Range: {exercise.repRange}</p>
+                </div>
+            ))
+
+            }
+
             {!exerciseFlag ?
                 <div className="flex justify-center">
                     <button type="button" onClick={toggleExerciseInput} className="bg-sky-600 hover:bg-sky-700 m-2">Add Exercise</button>
@@ -46,7 +83,7 @@ function Day() {
                                 onChange={(e) => setUpperRange(e.target.value)}/>
                             </div>
                             <div className="flex justify-center col-span-3">
-                                <button type="button" onClick={toggleExerciseInput} className="bg-black hover:bg-green-700">Done</button>
+                                <button type="button" onClick={submitExercise} className="bg-neutral-900 hover:bg-neutral-950">Done</button>
                             </div>
                         </div>
                         
