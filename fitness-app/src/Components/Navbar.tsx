@@ -4,9 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiHome, FiList, FiLogOut, FiLogIn, FiUserPlus } from "react-icons/fi";
 
 
-interface NavProps {
-        loggedIn: boolean;
-    }
 
 function Navbar() {
     const [loggedIn, setLoggedIn] = useState(false);

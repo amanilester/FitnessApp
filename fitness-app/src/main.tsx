@@ -4,14 +4,13 @@ import './index.css'
 import App from './App.tsx'
 import Home from './Components/Home.tsx'
 import NotFound from './Components/NotFound.tsx'
-import Navbar from './Components/Navbar.tsx'
 import NewProgram from './Components/NewProgram.tsx'
-import Day from './Components/Workouts/Day.tsx'
 import Login from './Components/LoginRegister/Login.tsx'
 import Register from './Components/LoginRegister/Register.tsx'
 import Layout from './Components/Layout.tsx'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
-
+import Programs from './Components/Workouts/Programs.tsx'
+import Workout from './Components/Workouts/Workout.tsx'
 
 let loggedIn = false;
 const router = createBrowserRouter([
@@ -21,6 +20,8 @@ const router = createBrowserRouter([
       { path: '/home', element: <Home /> },
       { path: '/*', element: <NotFound />},
       { path: '/new-program', element: <NewProgram /> },
+      { path: '/programs', element: <Programs /> },
+      { path: '/workout/:id', element: <Workout /> },
     ]
   },
   { path: '/login', element: <Login /> },

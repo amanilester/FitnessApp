@@ -50,15 +50,12 @@ function Day({day, onChange}: DayProps) {
 
     }
 
-    const toggleExerciseInput = () => {
-        setExerciseFlag(!exerciseFlag);
-    }
 
-        const handleKeyDown = (e : React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter") {
-            e.preventDefault();
-            }
-        };
+    const handleKeyDown = (e : React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+        e.preventDefault();
+        }
+    };
     
     return (
         <div className="bg-neutral-800 rounded-xl p-4 m-4">

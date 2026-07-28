@@ -14,12 +14,6 @@ type Day = {
     exercises: Exercise[];
 }
 
-type Program = {
-    name: string;
-    expanded: boolean;
-    days: Day[];
-}
-
 function NewProgram() {
 
 
@@ -50,10 +44,12 @@ function NewProgram() {
     }
 
     const saveProgram = async () => {
+    
         setSaving(true);
         setSaved(false);
 
-        const {data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log("Current user:", user);
 
         if(!user) {
             console.error("No user found");

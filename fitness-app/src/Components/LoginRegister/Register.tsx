@@ -22,7 +22,7 @@ function Register() {
         if (error) {
             console.error('Login error:', error.message);
         } else {
-            navigate('/profile');
+            navigate('/login');
         }
     }
     return (
