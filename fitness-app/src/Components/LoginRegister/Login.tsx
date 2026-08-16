@@ -1,68 +1,107 @@
 import React, { useState } from 'react';
-import { BiUser } from "react-icons/bi";
-import { AiOutlineUnlock } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router';
 import { supabase } from '../../lib/supabase';
+import { CiDumbbell } from "react-icons/ci";
+import { FiMail, FiLock } from "react-icons/fi";
 
 function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
             console.error('Login error:', error.message);
-        } else {
-            navigate('/home');
+            setLoading(false);
+            return;
         }
+
+        navigate('/home');
     }
+
     return (
-        <div className="h-screen flex items-center justify-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600')" }}>
-            <div className="bg-slate-800/30 border border-slate-400 rounded-md p-8 shadow-lg backdrop-filter backdrop-blur-sm relative">
-                <h1 className="text-4xl font-bold text-center mb-6">Login</h1>
-                <form>
-                    <div className="relative my-4">
+        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] relative overflow-hidden">
+            <div className="absolute w-96 h-96 rounded-full bg-sky-600/10 blur-[80px] top-1/2
+            left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"/>
+            <div className="w-full max-w-sm mx-4 px-8 py-10 bg-white/4 border border-white/10
+            rounded-2xl backdrop-blur-xl relative z-10">
+
+                <div className="text-center mb-8">
+                    <div className="w-10 h-10 bg-sky-600 rounded-xl flex items-center
+                    justify-center mx-auto mb-3">
+                        <CiDumbbell size={22} className="text-white" />
+                    </div>
+                    <h2 className="text-2xl font-medium text-white mb-1">Welcome Back</h2>
+                    <p className="text-sm text-neutral-500">Login to your account</p>
+                </div>
+
+                <form onSubmit={handleLogin}>
+
+                    {/* Error */}
+                    {error && (
+                        <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 mb-4">
+                            <p className="text-red-400 text-sm">{error}</p>
+                        </div>
+                    )}
+
+                    {/* Email */}
+                    <div className="relative mb-5">
                         <input
                             type="email"
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="block w-72 py-2.3 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
-                            placeholder=""
+                            placeholder=" "
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            required
+                            className="w-full bg-white/5 border border-white/10 rounded-lg pt-5 pb-2 px-4 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors peer"
                         />
-                        <label className="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-3 -z-10 origin-left peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6" htmlFor="">Email</label>
-                        <BiUser className="absolute top-0 right-4" />
+                        <label className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-neutral-500 pointer-events-none transition-all duration-150
+                            peer-focus:top-3 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-sky-400
+                            peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-neutral-500">
+                            Email
+                        </label>
+                        <FiMail size={15} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-600" />
                     </div>
-                    <div className="relative my-4">
+
+                    {/* Password */}
+                    <div className="relative mb-6">
                         <input
                             type="password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="block w-72 py-2.3 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:text-white focus:border-blue-600 peer"
-                            placeholder=""
+                            placeholder=" "
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            required
+                            className="w-full bg-white/5 border border-white/10 rounded-lg pt-5 pb-2 px-4 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors peer"
                         />
-                        <label className="absolute text-sm text-white duration-300 transform -translate-y-4 scale-75 top-3 -z-10 origin-left peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6" htmlFor="password">Password</label>
-                        <AiOutlineUnlock className="absolute top-0 right-4" />
+                        <label className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-neutral-500 pointer-events-none transition-all duration-150
+                            peer-focus:top-3 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-sky-400
+                            peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-neutral-500">
+                            Password
+                        </label>
+                        <FiLock size={15} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-600" />
                     </div>
-                    <div className="flex justify-between items-center">
-                        <div className="flex gap-2 items-center">
-                            <input type="checkbox" name="" id="" />
-                            <label htmlFor="Remember Me">Remember Me</label>
-                        </div>
-                        <Link to='' className="text-blue-500!">Forgot Password?</Link>
-                    </div>
-                    <div>
-                        <button
-                            className="w-full mb-4 text-[18px] mt-6 rounded-full
-                            bg-white text-sky-800 hover:bg-sky-600 hover:text-white
-                            py-2 transition-colors duration-300"
 
-                            type="submit"
-                            onClick={handleLogin}>Login</button>
-                    </div>
-                    <div>
-                        <span className="mt-4">New here? <Link className="text-blue-500!" to="/Register">Create An Account</Link></span>
-                    </div>
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium py-2.5 rounded-lg transition-colors active:scale-95"
+                    >
+                        {loading ? 'Logging in...' : 'Log in'}
+                    </button>
+
                 </form>
+
+                <p className="text-center text-sm mt-6">
+                    <span className="text-neutral-500">Don't have an account? </span>
+                    <Link to="/register" className="text-sky-400! hover:text-sky-300! transition-colors">
+                        Sign up
+                    </Link>
+                </p>
             </div>
         </div>
     );

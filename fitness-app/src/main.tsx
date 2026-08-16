@@ -11,17 +11,35 @@ import Layout from './Components/Layout.tsx'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Programs from './Components/Workouts/Programs.tsx'
 import Workout from './Components/Workouts/Workout.tsx'
+import Profile from './Components/Profile.tsx'
+import ProtectedRoute from './Components/ProtectedRoute.tsx'
 
 let loggedIn = false;
 const router = createBrowserRouter([
   { element: <Layout />,
     children: [
+      {
+        path: '/home',
+        element:<ProtectedRoute> <Home /> </ProtectedRoute>
+      },
+      {
+        path: '/new-program',
+        element:<ProtectedRoute> <NewProgram /> </ProtectedRoute>
+      },
+      {
+        path: '/programs',
+        element:<ProtectedRoute> <Programs /> </ProtectedRoute>
+      },
+      {
+        path: '/workout/:id',
+        element:<ProtectedRoute> <Workout /> </ProtectedRoute>
+      },
+      {
+        path: '/profile',
+        element:<ProtectedRoute> <Profile /> </ProtectedRoute>
+      },
       { path: '/', element: <App /> },
-      { path: '/home', element: <Home /> },
       { path: '/*', element: <NotFound />},
-      { path: '/new-program', element: <NewProgram /> },
-      { path: '/programs', element: <Programs /> },
-      { path: '/workout/:id', element: <Workout /> },
     ]
   },
   { path: '/login', element: <Login /> },

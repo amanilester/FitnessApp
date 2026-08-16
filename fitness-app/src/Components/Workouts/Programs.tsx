@@ -1,7 +1,7 @@
 import { useState, useEffect} from "react";
 import { supabase } from "../../lib/supabase";
 import { useNavigate } from "react-router-dom";
-import { FiChevronDown, FiPlay, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiCheck, FiChevronDown, FiPlay, FiPlus, FiTrash2 } from "react-icons/fi";
 import { CiDumbbell } from "react-icons/ci";
 
 type Exercise = {
@@ -30,6 +30,7 @@ function Programs() {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [loading, setLoading] = useState(true);
     const [openId, setOpenId] = useState<string | null>(null);
+    const [activeProgramId, setActiveProgramId] = useState<string | null>(null);
     const navigate = useNavigate();
 
 
@@ -38,11 +39,19 @@ function Programs() {
 
         if (!user) return;
 
-        const { data, error } = await supabase
-            .from('programs')
-            .select('id, name, created_at, days ( id, name, exercises (id, exercise, sets, reps) )')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
+        const [{ data: programsData , error }, {data: profile}] = await Promise.all([
+            supabase
+                .from('programs')
+                .select('id, name, created_at, days ( id, name, exercises (id, exercise, sets, reps) )')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false }),
+            supabase
+                .from('profiles')
+                .select('active_program_id')
+                .eq('id', user.id)
+                .single()
+        ]);
+
 
         if (error) {
             console.error(error);
@@ -50,7 +59,8 @@ function Programs() {
         }
         
 
-        setPrograms(data as Program[]);
+        setPrograms(programsData as Program[]);
+        setActiveProgramId(profile?.active_program_id || null);
         setLoading(false);
     }
 
@@ -72,7 +82,25 @@ function Programs() {
         console.log(`Program "${programs.find(p => p.id === id)?.name}" deleted successfully.`);
         setPrograms(prev => prev.filter(p => p.id !== id));
         if(openId === id) setOpenId(null);
+        if(activeProgramId === id) setActiveProgramId(null);
+    }
 
+    const setActiveProgram = async (programId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        
+        const { error } = await supabase
+            .from('profiles')
+            .update({ active_program_id: programId })
+            .eq('id', user.id);
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+        
+        setActiveProgramId(programId);
     }
 
     const formatDate = (dateString: string) => {
@@ -121,46 +149,55 @@ function Programs() {
             {/* Program List */}
             {!loading && programs.map((program) => {
                 const isOpen = openId === program.id;
+                const isActive = activeProgramId === program.id;
                 return (
                     <div
                         key={program.id}
                         className={`mb-2 rounded-xl border transition-colors overflow-hidden
-                        ${isOpen ? 'border-neutral-800' : 'border-neutral-800'}`}
+                        ${isActive ? 'border-sky-600/50' : 'border-neutral-800'}`}
                     >
-                    <div 
-                        onClick={() => toggleOpen(program.id)}
-                        className="flex items-center justify-between px-4 py-3.5 bg-neutral-800 hover:bg-neutral-750 cursor-pointer"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-sky-600/20 flex items-center
-                            justify-center text-sky-400 shrink-0">
-                                <CiDumbbell size={18} />
+                        <div 
+                            onClick={() => toggleOpen(program.id)}
+                            className="flex items-center justify-between px-4 py-3.5 bg-neutral-800 hover:bg-neutral-750 cursor-pointer"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-sky-400 
+                                ${isActive ? 'bg-sky-600/30' : 'bg-sky-600/20'}`}>
+                                    <CiDumbbell size={18} />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-white text-sm font-medium">{program.name}</p>
+                                        {isActive && (
+                                            <span className="text-xs text-sky-400 bg-sky-600/10 border border-sky-600/30
+                                            rounded-md px-1.5 py-0.5">
+                                                Active
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-neutral-400 text-xs mt-0.5">
+                                        {program.days.length} {program.days.length === 1 ? 'day' : 'days'} · {totalExercises(program)} {totalExercises(program) === 1 ? 'exercise' : 'exercises'}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-white text-sm font-medium">{program.name}</p>
-                                <p className="text-neutral-400 text-xs mt-0.5">
-                                    {program.days.length} {program.days.length === 1 ? 'day' : 'days'} · {totalExercises(program)} {totalExercises(program) === 1 ? 'exercise' : 'exercises'}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <span className="text-xs text-neutral-500 bg-neutral-900 border border-neutral-700 rounded-md px-2 py-1">
-                                {formatDate(program.created_at)}
-                            </span>
-                            <button
-                                onClick={(e) => deleteProgram(program.id, e)}
-                                className="text-neutral-600 hover:text-red-400 hover:bg-red-400/10 p-1.5
-                                rounded-md transition-colors"
-                                aria-label={`Delete ${program.name}`}
-                            >
-                                <FiTrash2 size={15} />
-                            </button>
+                            <div className="flex items-center gap-3">
+                                <span className="text-xs text-neutral-500 bg-neutral-900 border border-neutral-700 rounded-md px-2 py-1">
+                                    {formatDate(program.created_at)}
+                                </span>
+                                <button
+                                    onClick={(e) => deleteProgram(program.id, e)}
+                                    className="text-neutral-600 hover:text-red-400 hover:bg-red-400/10 p-1.5
+                                    rounded-md transition-colors"
+                                    aria-label={`Delete ${program.name}`}
+                                >
+                                    <FiTrash2 size={15} />
+                                </button>
 
-                            <FiChevronDown
-                                size={16}
-                                className={`text-neutral-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                            />
-                        </div>
+                                <FiChevronDown
+                                    size={16}
+                                    className={`text-neutral-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                                />
+                            </div>
                     
                     </div>
 
@@ -196,7 +233,19 @@ function Programs() {
                                 )}
  
                                 {/* Start workout button */}
-                                <div className="flex justify-end mt-4 pt-3 border-t border-neutral-800">
+                                <div className="flex items-center justify-between mt-4 pt-3 border-t border-neutral-800">
+                                    <button
+                                        onClick={(e) => setActiveProgram(program.id, e)}
+                                        className={`inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg transition-colors active:scale-95
+                                            ${isActive
+                                                ? 'text-sky-400 bg-sky-600/10 border border-sky-600/30 cursor-default'
+                                                : 'text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-700'
+                                            }`}
+                                        disabled={isActive}
+                                    >
+                                        <FiCheck size={13} />
+                                        {isActive ? 'Active program' : 'Set as active'}
+                                    </button>
                                     <button
                                         onClick={() => navigate(`/workout/${program.id}`)}
                                         className="inline-flex items-center gap-2 hover:text-sky-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors active:scale-95"
