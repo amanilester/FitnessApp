@@ -17,6 +17,7 @@ function Register() {
         setError('');
 
         if (password !== confirmPassword) {
+            setError('Passwords do not match');
             console.error('Passwords do not match');
             return;
         }

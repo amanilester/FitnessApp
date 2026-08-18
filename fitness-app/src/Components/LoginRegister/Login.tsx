@@ -17,6 +17,7 @@ function Login() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
             console.error('Login error:', error.message);
+            setError(error.message);
             setLoading(false);
             return;
         }
