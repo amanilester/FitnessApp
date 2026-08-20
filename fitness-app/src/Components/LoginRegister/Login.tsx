@@ -26,7 +26,7 @@ function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] relative overflow-hidden">
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0f] relative overflow-hidden">
             <div className="absolute w-96 h-96 rounded-full bg-sky-600/10 blur-[80px] top-1/2
             left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"/>
             <div className="w-full max-w-sm mx-4 px-8 py-10 bg-white/4 border border-white/10

@@ -17,7 +17,7 @@ type SetRowProps = {
 function SetRow({ setNumber, set, targetReps, onUpdate, onToggle }: SetRowProps) {
     return (
         <div className="grid grid-cols-4 gap-3 items-center mb-2">
-            <span className={`text-sm font-medium ${set.done ? 'text-emerald-400' : 'text-neutral-400'}`}>
+            <span className={`text-sm font-medium ${set.done ? 'text-sky-600' : 'text-neutral-400'}`}>
                 {setNumber}
             </span>
             <input
@@ -40,8 +40,8 @@ function SetRow({ setNumber, set, targetReps, onUpdate, onToggle }: SetRowProps)
                 onClick={onToggle}
                 className={`flex items-center justify-center w-8 h-8 rounded-lg border transition-colors mx-auto
                     ${set.done
-                        ? 'bg-emerald-600 border-emerald-600 text-white'
-                        : 'border-neutral-600 text-neutral-600 hover:border-emerald-500 hover:text-emerald-500'
+                        ? 'bg-emerald-600 border-sky-600 text-white'
+                        : 'border-neutral-600 text-neutral-600 hover:border-sky-500 hover:text-sky-500'
                     }`}
             >
                 <FiCheck size={14} />
